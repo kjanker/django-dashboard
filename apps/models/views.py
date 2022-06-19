@@ -70,4 +70,4 @@ def toggle_model(request, model_id):
     if request.user == model.owner:
         model.active = not model.active
         model.save()
-    return all_models(request)
+    return redirect('all_models')
