@@ -17,18 +17,22 @@ def all_models(request):
 
 
 @login_required(login_url="/login/")
-def model_details(request, model_id=None):
-    model = TradingModel.objects.filter(id=model_id)[0] if model_id else None
+def model_details(request, model_id):
+    model = TradingModel.objects.filter(id=model_id)[0]
     msg = None
     editable = request.user == model.owner
 
     if request.method == "POST" and editable:
-        form = TradingModelForm(request.POST, instance=model)
-        if form.is_valid():
-            form.save()
-            msg = "Changes to the model have been saved!"
-        else:
-            msg = "Error: Could not save model!"
+        if request.POST.get("delete"):
+            model.delete()
+            return redirect("all_models")
+        elif request.POST.get("save"):
+            form = TradingModelForm(request.POST, instance=model)
+            if form.is_valid():
+                form.save()
+                msg = "Changes to the model have been saved!"
+            else:
+                msg = "Error: Could not save model!"
     else:
         form = TradingModelForm(instance=model)
 
