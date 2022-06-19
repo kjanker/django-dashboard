@@ -14,7 +14,11 @@
           {% csrf_token %} 
           <div class="card-header">
             <h5 class="card-title"><a href="/models/"><i class="tim-icons icon-minimal-left"></i>ALL MODELS</a></h5>
-            <h4 class="title">Model view</h5>
+            {% if new %}
+              <h4 class="title">Create new model</h5>
+            {% else %}
+              <h4 class="title">Model view</h5>
+            {% endif %}
             {% if msg %}
             <h6>{{ msg | safe }}</h6>
             {% endif %}
@@ -24,7 +28,11 @@
                 <div class="col-md-1 pr-md-1">
                   <div class="form-group">
                     <label>Id</label><br>
+                    {% if model %}
                     <input type="text" class="form-control" disabled="" value="{{ model.id }}">
+                    {% else %}
+                    <input type="text" class="form-control" disabled="" value="">
+                    {% endif %}
                   </div>
                 </div>
                 <div class="col-md-5 pr-md-1">
@@ -35,10 +43,14 @@
                   <span class="text-danger">{{ form.name.errors }}</span>
                 </div>
                 <div class="col-md-2 pr-md-1">
-                    <div class="form-group">
-                      <label>Owner</label><br>
-                      <input type="text" class="form-control" disabled="" value="{{ model.owner }}">
-                    </div>
+                  <div class="form-group">
+                    <label>Owner</label><br>
+                    {% if model %}
+                    <input type="text" class="form-control" disabled="" value="{{ model.owner }}">
+                    {% else %}
+                    <input type="text" class="form-control" disabled="" value="{{ request.user }}">
+                    {% endif %}
+                  </div>
                 </div>
               </div>
               <div class="row">
@@ -68,7 +80,12 @@
                 </div>
               </div>
           </div>
-          {% if request.user == model.owner %}
+          {% if new %}
+          <div class="card-footer">
+            <button type="submit" name="save" class="btn btn-fill btn-primary">Create model</button>
+          </div>
+          {% endif %}
+          {% if editable %}
           <div class="card-footer">
             <button type="submit" name="save" class="btn btn-fill btn-primary">Save changes</button>
           </div>
