@@ -1,0 +1,49 @@
+
+
+    <div class="sidebar">
+      <div class="sidebar-wrapper">
+        <div class="logo">
+          <a target="_blank" rel="sponsored noopener noreferrer" 
+            href="https://appseed.us/admin-dashboards/django-dashboard-black" class="simple-text logo-mini">
+            PI
+          </a>
+          <a target="_blank" rel="sponsored noopener noreferrer" 
+            href="https://appseed.us/admin-dashboards/django-dashboard-black" class="simple-text logo-normal">
+            Django Black
+          </a>
+        </div>
+
+        <ul class="nav">
+        {% if request.user.is_authenticated %}
+
+          <li class="{% if 'index' in segment %} active {% endif %}">
+            <a href="/">
+              <i class="tim-icons icon-chart-pie-36"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <li class="{% if 'all-models' in segment %} active {% endif %}">
+            <a href="/models/">
+              <i class="tim-icons icon-bullet-list-67"></i>
+              <p>All models</p>
+            </a>
+          </li>
+          {% else %}
+          <li class="{% if 'all-models' in segment %} active {% endif %}">
+            <a href="/login/">
+              <i class="tim-icons icon-single-02"></i>
+              <p>Login</p>
+            </a>
+          </li>
+          <li class="{% if 'all-models' in segment %} active {% endif %}">
+            <a href="/register/">
+              <i class="tim-icons icon-paper"></i>
+              <p>Register</p>
+            </a>
+          </li>
+          {% endif %}
+                    
+        </ul>
+        
+      </div>
+    </div>

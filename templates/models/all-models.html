@@ -1,0 +1,106 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} All models {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="card ">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-6 pr-md-1">
+            <h3 class="card-title"> All models</h3>
+          </div>
+          <div class="col-md-6 pl-md-1 text-right">
+            <div class="button-container">
+              <a href="/models/new" class="btn btn-icon btn-round">
+                <i class="tim-icons icon-simple-add"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table tablesorter " id="">
+            <thead class=" text-primary">
+              <tr>
+                <th>
+                  Id
+                </th>
+                <th>
+                  Name
+                </th>
+                <th>
+                  Strategy
+                </th>
+                <th>
+                  Owner
+                </th>
+                <th class="text-center">
+                  Active
+                </th>
+                <th class="text-center">
+                  ...
+                </th>
+              </tr>
+            </thead>
+              {% if models %}
+            <tbody>
+                {% for model in models %}
+                <tr>
+                    <td>
+                      {{ model.id }}
+                    </td>
+                    <td>
+                      <a href="/models/{{ model.id }}/">{{ model.name }}</a>
+                    </td>
+                    <td>
+                      {{ model.strategy }}
+                    </td>
+                    <td>
+                      <a href="/user/{{ model.owner }}">{{ model.owner }}</a>
+                    </td>
+                    <td class="text-center">
+                      {% if model.active %}
+                        <i class="tim-icons icon-check-2"></i>
+                      {% else %}
+                        <i class="tim-icons icon-lock-circle"></i>
+                      {% endif %}
+                    </td>
+                    <td class="text-center">
+                      {% if request.user == model.owner %}
+                        <a href="/models/{{ model.id }}/"><i class="tim-icons icon-pencil"></i></a>
+                        {% if model.active %}
+                            <a href="/models/{{ model.id }}/toggle"><i class="tim-icons icon-button-pause"></i></a>
+                        {% else %}
+                            <a href="/models/{{ model.id }}/toggle"><i class="tim-icons icon-triangle-right-17"></i></a>
+                        {% endif %}
+                      {% else %}
+                      <a href="/models/{{ model.id }}/"><i class="tim-icons icon-zoom-split"></i></a>
+                      {% endif %}
+
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+              {% else %}
+          </table>
+          No models available.
+              {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
