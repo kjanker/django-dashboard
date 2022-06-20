@@ -3,6 +3,7 @@
 from django import forms
 
 from .models import TradingModel
+from .strategies import choices
 
 
 class TradingModelForm(forms.ModelForm):
@@ -16,11 +17,12 @@ class TradingModelForm(forms.ModelForm):
                     "class": "form-control",
                 }
             ),
-            "strategy": forms.TextInput(
+            "strategy": forms.Select(
+                choices=choices,
                 attrs={
                     "placeholder": "Select a strategy",
                     "class": "form-control",
-                }
+                },
             ),
             "parameters": forms.Textarea(
                 attrs={
