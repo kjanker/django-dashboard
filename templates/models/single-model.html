@@ -14,7 +14,7 @@
           {% csrf_token %} 
           <div class="card-header">
             <h5 class="card-title"><a href="/models/"><i class="tim-icons icon-minimal-left"></i>ALL MODELS</a></h5>
-            {% if new %}
+            {% if create %}
               <h4 class="title">Create new model</h5>
             {% else %}
               <h4 class="title">Model view</h5>
@@ -40,7 +40,6 @@
                     <label>Name</label><br>
                     {{ form.name }}
                   </div>
-                  <span class="text-danger">{{ form.name.errors }}</span>
                 </div>
                 <div class="col-md-2 pr-md-1">
                   <div class="form-group">
@@ -59,30 +58,35 @@
                     <label>Strategy</label><br>
                     {{ form.strategy }}
                   </div>
-                  <span class="text-danger">{{ form.strategy.errors }}</span>
                 </div>
               </div>
+              {% for parameter in parameters %}
               <div class="row">
-                <div class="col-md-8 pr-md-1">
-                  <div class="form-group">
-                    <label>Parameters</label><br>
-                    {{ form.parameters }}
-                  </div>
-                  <span class="text-danger">{{ form.parameters.errors }}</span>
+                <div class="col-md-1 pr-md-1">
                 </div>
+                <div class="col-md-2 pr-md-1">
+                  <div class="form-group">
+                    <label>{{ parameter.name }}</label>
+                  </div>
+                </div>
+                <div class="col-md-5 pr-md-1 text-middle">
+                    <div class="form-group">
+                      {{ parameter }}
+                    </div>
+                  </div>
               </div>
+              {% endfor %}
               <div class="row">
                 <div class="col-md-8 pr-md-1">
                   <div class="form-group">
                     <p>Use this model in live signaling: &nbsp; {{ form.active }}</p>
                   </div>
-                  <span class="text-danger">{{ form.active.errors }}</span>
                 </div>
               </div>
           </div>
-          {% if new %}
+          {% if create %}
           <div class="card-footer">
-            <button type="submit" name="create" class="btn btn-fill btn-primary">Create model</button>
+            <button type="submit" name="create" value="create" class="btn btn-fill btn-primary">Create model</button>
           </div>
           {% endif %}
           {% if editable %}

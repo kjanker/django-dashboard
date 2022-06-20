@@ -3,7 +3,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from .forms import TradingModelForm
+from .forms import ParameterForm, TradingModelForm
 from .models import TradingModel
 
 
@@ -24,17 +24,33 @@ def model_details(request, model_id):
 
     if request.method == "POST" and editable:
         if request.POST.get("delete"):
+            """Delete button pressed"""
             model.delete()
             return redirect("all_models")
         elif request.POST.get("save"):
+            """Save button pressed"""
             form = TradingModelForm(request.POST, instance=model)
             if form.is_valid():
-                form.save()
+                model = form.save(commit=False)
+                model.parameters = ParameterForm.get_params(
+                    request.POST, strategy=model.strategy
+                )
+                model.save()
                 msg = "Changes to the model have been saved!"
             else:
                 msg = "Error: Could not save model!"
+        else:
+            """Strategy changed"""
+            form = TradingModelForm(request.POST, instance=model)
+            if form.is_valid():
+                model = form.save(commit=False)
     else:
         form = TradingModelForm(instance=model)
+
+    parameter_form = ParameterForm(
+        strategy=request.POST.get("strategy", model.strategy),
+        values=model.parameters,
+    )
 
     if not editable:
         for _, field in form.fields.items():
@@ -44,6 +60,7 @@ def model_details(request, model_id):
         "segment": "all-models",
         "model": model,
         "form": form,
+        "parameters": parameter_form,
         "msg": msg,
         "editable": editable,
     }
@@ -56,18 +73,34 @@ def new_model(request):
     msg = None
 
     if request.method == "POST":
-        form = TradingModelForm(request.POST, initial={"owner_id": request.user})
-        if form.is_valid():
-            model = form.save(commit=False)
-            model.owner = request.user
-            model.save()
-            return redirect("model_details", model_id=model.id)
+        if request.POST.get("create"):
+            """Create button pressed"""
+            form = TradingModelForm(request.POST, initial={"owner_id": request.user})
+            if form.is_valid():
+                model = form.save(commit=False)
+                model.owner = request.user
+                model.parameters = ParameterForm.get_params(request.POST)
+                model.save()
+                return redirect("model_details", model_id=model.id)
+            else:
+                msg = "Error: Could not save model!"
         else:
-            msg = "Error: Could not save model!"
+            """Strategy changed"""
+            form = TradingModelForm(request.POST, initial={"owner_id": request.user})
     else:
-        form = TradingModelForm()
+        form = TradingModelForm(initial={"strategy": None})
 
-    context = {"segment": "all-models", "form": form, "msg": msg, "new": True}
+    parameter_form = ParameterForm(
+        strategy=request.POST.get("strategy", ""),
+    )
+
+    context = {
+        "segment": "all-models",
+        "form": form,
+        "parameters": parameter_form,
+        "msg": msg,
+        "create": True,
+    }
 
     return render(request, "models/single-model.html", context)
 
