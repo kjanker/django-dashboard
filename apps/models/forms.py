@@ -33,20 +33,24 @@ class TradingModelForm(forms.ModelForm):
 class ParameterForm(forms.Form):
     def __init__(self, strategy: str, values: dict = {}, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        for name, type in strategy_parameters.get(strategy, {}).items():
+        for name, param in strategy_parameters.get(strategy, {}).items():
             name = "parameters." + name
-            if type == int:
+            if param.get("dtype") == int:
                 self.fields[name] = forms.IntegerField(required=True)
-            elif type == float:
+            elif param.get("dtype") == float:
                 self.fields[name] = forms.FloatField(required=True)
-            elif type == str:
+            elif param.get("dtype") == str:
                 self.fields[name] = forms.CharField(required=True)
-            elif type == bool:
-                self.fields[name] = forms.BooleanField(required=False)
-                self.fields[name].help_text = "checkbox"
+            elif param.get("dtype") == bool:
+                self.fields[name] = forms.BooleanField(
+                    required=False, help_text="checkbox"
+                )
+
+            self.fields[name].label = param.get("label")
+            self.initial[name] = param.get("default")
+            self.fields[name].widget.attrs["placeholder"] = param.get("placeholder")
 
         for name, field in self.fields.items():
-            field.widget.attrs["placeholder"] = name + " value"
             field.widget.attrs["class"] = "form-control"
 
         for name, value in values.items():
