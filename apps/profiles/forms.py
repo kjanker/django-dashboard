@@ -9,7 +9,7 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ["email", "first_name", "last_name"]
         widgets = {
-            "email": forms.TextInput(
+            "email": forms.EmailInput(
                 attrs={
                     "placeholder": "example@mail.com",
                     "class": "form-control",
