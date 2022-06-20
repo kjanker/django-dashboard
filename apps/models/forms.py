@@ -43,6 +43,7 @@ class ParameterForm(forms.Form):
                 self.fields[name] = forms.CharField(required=True)
             elif type == bool:
                 self.fields[name] = forms.BooleanField(required=False)
+                self.fields[name].help_text = "checkbox"
 
         for name, field in self.fields.items():
             field.widget.attrs["placeholder"] = name + " value"
