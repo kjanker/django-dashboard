@@ -36,6 +36,10 @@ def model_details(request, model_id):
     else:
         form = TradingModelForm(instance=model)
 
+    if not editable:
+        for _, field in form.fields.items():
+            field.widget.attrs["disabled"] = True
+
     context = {
         "segment": "all-models",
         "model": model,
@@ -74,4 +78,4 @@ def toggle_model(request, model_id):
     if request.user == model.owner:
         model.active = not model.active
         model.save()
-    return redirect('all_models')
+    return redirect("all_models")
