@@ -11298,7 +11298,7 @@ table.tablesorter thead tr .headerSortDown {
 .sidebar,
 .off-canvas-sidebar {
   background: #a19efa;
-  background: linear-gradient(0deg, #a19efa 0%, #7a74e5 100%);
+  background: linear-gradient(0deg, #715eca 0%, #7a74e5 100%);
   height: calc(100vh - 90px);
   width: 230px;
   position: fixed;
@@ -12506,7 +12506,7 @@ code {
 
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
   background-color: #1d253b;
-  color: #344675;
+  color: #ffffff;
   cursor: not-allowed; }
 
 .input-group-btn .btn {
