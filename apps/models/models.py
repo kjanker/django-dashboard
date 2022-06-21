@@ -14,4 +14,4 @@ class TradingModel(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.strategy
+        return f"""{self.strategy}({", ".join([f"{key}={value}" for key, value in self.parameters.items()])})"""

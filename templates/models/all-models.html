@@ -60,31 +60,30 @@
                       <a href="/models/{{ model.id }}/">{{ model.name }}</a>
                     </td>
                     <td>
-                      {{ model.strategy }}
+                      {{ model }}
                     </td>
                     <td>
                       <a href="/user/{{ model.owner }}">{{ model.owner }}</a>
                     </td>
                     <td class="text-center">
+                      {% if request.user == model.owner %}
+                        <a href="/models/{{ model.id }}/toggle">
+                      {% endif %}
                       {% if model.active %}
-                        <i class="tim-icons icon-check-2"></i>
+                        <i class="tim-icons icon-button-pause"></i>
                       {% else %}
-                        <i class="tim-icons icon-lock-circle"></i>
+                        <i class="tim-icons icon-triangle-right-17"></i>
+                      {% endif %}
+                      {% if request.user == model.owner %}
+                        </a>
                       {% endif %}
                     </td>
                     <td class="text-center">
                       {% if request.user == model.owner %}
                         <a href="/models/{{ model.id }}/"><i class="tim-icons icon-pencil"></i></a>
-                        {% if model.active %}
-                            <a href="/models/{{ model.id }}/toggle"><i class="tim-icons icon-button-pause"></i></a>
-                        {% else %}
-                            <a href="/models/{{ model.id }}/toggle"><i class="tim-icons icon-triangle-right-17"></i></a>
-                        {% endif %}
                       {% else %}
-                      <a href="/models/{{ model.id }}/"><i class="tim-icons icon-zoom-split"></i></a>
+                        <a href="/models/{{ model.id }}/"><i class="tim-icons icon-zoom-split"></i></a>
                       {% endif %}
-
-
                     </td>
                 </tr>
                 {% endfor %}
