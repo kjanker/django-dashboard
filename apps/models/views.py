@@ -1,9 +1,11 @@
 # -*- encoding: utf-8 -*-
 
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from .forms import ParameterForm, TradingModelForm
+from .forms import BacktestingForm, ParameterForm, TradingModelForm
 from .models import TradingModel
 
 
@@ -22,28 +24,32 @@ def model_details(request, model_id):
     msg = None
     editable = request.user == model.owner
 
-    if request.method == "POST" and editable:
-        if request.POST.get("delete"):
-            """Delete button pressed"""
-            model.delete()
-            return redirect("all_models")
-        elif request.POST.get("save"):
-            """Save button pressed"""
-            form = TradingModelForm(request.POST, instance=model)
-            if form.is_valid():
-                model = form.save(commit=False)
-                model.parameters = ParameterForm.get_params(
-                    request.POST, strategy=model.strategy
-                )
-                model.save()
-                msg = "Changes to the model have been saved!"
-            else:
-                msg = "Error: Could not save model!"
+    if request.POST.get("backtest"):
+        backtesting_form = BacktestingForm(request.POST)
+        if backtesting_form.is_valid():
+            logging.info(f"trigger backtesting of model {model.id}.")
+            pass
+    else:
+        backtesting_form = BacktestingForm()
+
+    if editable and request.POST.get("delete"):
+        """Delete button pressed"""
+        model.delete()
+        return redirect("all_models")
+    elif editable and request.POST.get("save"):
+        """Save button pressed"""
+        data = request.POST.copy()
+        data["strategy"] = model.strategy
+        form = TradingModelForm(data=data, instance=model)
+        if form.is_valid():
+            model: TradingModel = form.save(commit=False)
+            model.parameters = ParameterForm.get_params(
+                request.POST, strategy=model.strategy
+            )
+            model.save()
+            msg = "Changes to the model have been saved!"
         else:
-            """Strategy changed"""
-            form = TradingModelForm(request.POST, instance=model)
-            if form.is_valid():
-                model = form.save(commit=False)
+            msg = "Error: Could not save model!"
     else:
         form = TradingModelForm(instance=model)
 
@@ -56,6 +62,8 @@ def model_details(request, model_id):
         for _, field in form.fields.items():
             field.widget.attrs["disabled"] = True
 
+    form.fields["strategy"].disabled = True
+
     context = {
         "segment": "all-models",
         "model": model,
@@ -63,6 +71,7 @@ def model_details(request, model_id):
         "parameters": parameter_form,
         "msg": msg,
         "editable": editable,
+        "backtesting": backtesting_form,
     }
 
     return render(request, "models/single-model.html", context)

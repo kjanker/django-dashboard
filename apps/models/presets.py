@@ -6,9 +6,9 @@ strategy_list = [
     "SampleStrategy",
 ]
 
-choices = list(zip(strategy_list, strategy_list))
+strategy_choices = list(zip(strategy_list, strategy_list))
 
-parameters = {
+strategy_parameters = {
     "": {},
     "Random": {
         "seed": {
@@ -57,3 +57,15 @@ parameters = {
         },
     },
 }
+
+currency_list = [
+    "ETH/BTC",
+]
+
+currency_choices = list(zip(currency_list, currency_list))
+
+metric_list = [
+    "TotalReturn",
+]
+
+metric_choices = list(zip(metric_list, metric_list))

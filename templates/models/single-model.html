@@ -8,7 +8,7 @@
 {% block content %}
 
 <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       <div class="card">
         <form role="form" method="post" action="">
           {% csrf_token %} 
@@ -25,9 +25,9 @@
           </div>
           <div class="card-body">
               <div class="row">
-                <div class="col-md-1 pr-md-1">
+                <div class="col-md-2 pr-md-1">
                   <div class="form-group">
-                    <label>Id</label><br>
+                    <label>Id</label>
                     {% if model %}
                     <input type="text" class="form-control" disabled="" value="{{ model.id }}">
                     {% else %}
@@ -35,15 +35,15 @@
                     {% endif %}
                   </div>
                 </div>
-                <div class="col-md-5 pr-md-1">
+                <div class="col-md-7 pc-md-1">
                   <div class="form-group">
-                    <label>Name</label><br>
+                    <label>Name</label>
                     {{ form.name }}
                   </div>
                 </div>
-                <div class="col-md-2 pr-md-1">
+                <div class="col-md-3 pl-md-1">
                   <div class="form-group">
-                    <label>Owner</label><br>
+                    <label>Owner</label>
                     {% if model %}
                     <input type="text" class="form-control" disabled="" value="{{ model.owner }}">
                     {% else %}
@@ -53,19 +53,19 @@
                 </div>
               </div>
               <div class="row">
-                <div class="col-md-8 pr-md-1">
+                <div class="col-md-12 pc-md-1">
                   <div class="form-group">
-                    <label>Strategy</label><br>
+                    <label>Strategy</label>
                     {{ form.strategy }}
                   </div>
                 </div>
               </div>
               {% for parameter in parameters %}
                 {% if parameter.help_text == "checkbox" %}
-                  <div class="row">
-                    <div class="col-md-3 pr-md-1">
+                  <div class="row align-items-center">
+                    <div class="col-md-1 pr-md-1">
                     </div>
-                    <div class="col-md-5 pr-md-1 text-middle">
+                    <div class="col-md-10 pr-md-1 text-middle">
                       <div class="form-group">
                         <div class="form-check">
                             <label class="form-check-label">
@@ -77,24 +77,38 @@
                     </div>
                   </div>
                 {% else %}
-                <div class="row">
-                    <div class="col-md-1 pr-md-1">
-                    </div>
-                    <div class="col-md-2 pr-md-1">
-                      <div class="form-group">
-                        <label>{{ parameter.label }}</label>
-                      </div>
-                    </div>
-                    <div class="col-md-5 pr-md-1 text-middle">
-                      <div class="form-group">
-                        {{ parameter }}
-                      </div>
+                <div class="row align-items-center">
+                  <div class="col-md-1 pr-md-1">
+                  </div>
+                  <div class="col-md-3 pr-md-1">
+                    <div class="form-group">
+                      <label>{{ parameter.label }}</label>
                     </div>
                   </div>
+                  <div class="col-md-7 pr-md-1">
+                    <div class="form-group">
+                      {{ parameter }}
+                    </div>
+                  </div>
+                </div>
                 {% endif %}
               {% endfor %}
               <div class="row">
-                <div class="col-md-8 pr-md-1">
+                <div class="col-md-6 pr-md-1">
+                  <div class="form-group"> 
+                    <label>Currency pair</label>
+                    {{ form.currency }}
+                  </div>
+                </div>
+                <div class="col-md-6 pl-md-1">
+                    <div class="form-group"> 
+                      <label>Data source</label>
+                      <input type="text" class="form-control" disabled="" value="All">
+                    </div>
+                  </div>
+              </div>
+              <div class="row align-items-center">
+                <div class="col-md-6 pr-md-1">
                   <div class="form-group">                    
                     <div class="form-check">
                       <label class="form-check-label">
@@ -104,8 +118,14 @@
                     </div>
                   </div>
                 </div>
+                <div class="col-md-6 pl-md-1">
+                    <div class="form-group"> 
+                      <label>Metrics</label>
+                      {{ form.metric }}
+                    </div>
+                  </div>
               </div>
-          </div>
+            </div>
           {% if create %}
           <div class="card-footer">
             <button type="submit" name="create" value="create" class="btn btn-fill btn-primary">Create model</button>
@@ -114,7 +134,7 @@
           {% if editable %}
           <div class="card-footer">
             <div class="row">
-              <div class="col-md-4 pr-md-1">
+              <div class="col-md-8 pr-md-1">
                 <button type="submit" name="save" value="save" class="btn btn-fill btn-primary">Save changes</button>
                 <a href="" class="btn btn-fill btn-primary">Reset</a>
               </div>
@@ -125,6 +145,45 @@
           </div>
           {% endif %}
         </form>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        {% if create %}
+        <div class="card-header">
+          <h4 class="title">Help</h5>
+        </div>
+        <div class="card-body">
+          <label> Name </label>
+          <p>Give your model a speaking name.</p>
+          <br>
+          <label> Strategy </label>
+          <p>Select one of the available strategies and enter the required strategy parameters.</p>
+          <br>
+          <label> Currency pair </label>
+          <p>Select the currency pairs on which the model should be applied. Currently only one pair can be selected.</p>
+          <br>
+          <label> Metric </label>
+          <p>Select the metrics which should be calculated in backtesting and with each execution. Currently only one metric can be selected.</p>
+          <br>
+        </div>
+        {% else %}
+        <form role="form" method="post" action="">
+          {% csrf_token %} 
+          <div class="card-header">
+            <h4 class="title">Backtest model</h5>
+          </div>
+          <div class="card-body">
+            <label>Start date</label>
+            {{ backtesting.start }}
+            <label>End date</label>
+            {{ backtesting.end }}
+          </div>
+          <div class="card-footer">
+            <button type="submit" name="backtest" value="backtest" class="btn btn-fill btn-primary">Start backtesting</button>
+          </div>
+        </form>
+        {% endif %}
       </div>
     </div>
 </div>

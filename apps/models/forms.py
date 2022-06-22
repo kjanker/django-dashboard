@@ -1,17 +1,23 @@
 # -*- encoding: utf-8 -*-
 
+import datetime
+
 from django import forms
 from django.db.models.fields import BLANK_CHOICE_DASH
 
 from .models import TradingModel
-from .strategies import choices as strategy_choices
-from .strategies import parameters as strategy_parameters
+from .presets import (
+    currency_choices,
+    metric_choices,
+    strategy_choices,
+    strategy_parameters,
+)
 
 
 class TradingModelForm(forms.ModelForm):
     class Meta:
         model = TradingModel
-        fields = ["name", "strategy", "active"]
+        fields = ["name", "strategy", "currency", "active", "metric"]
         widgets = {
             "name": forms.TextInput(
                 attrs={
@@ -25,6 +31,20 @@ class TradingModelForm(forms.ModelForm):
                     "placeholder": "Select a strategy",
                     "class": "form-control",
                     "onChange": "form.submit();",
+                },
+            ),
+            "currency": forms.Select(
+                choices=currency_choices,
+                attrs={
+                    "placeholder": "Select a currency pair",
+                    "class": "form-control",
+                },
+            ),
+            "metric": forms.Select(
+                choices=metric_choices,
+                attrs={
+                    "placeholder": "Select a metric",
+                    "class": "form-control",
                 },
             ),
         }
@@ -63,3 +83,18 @@ class ParameterForm(forms.Form):
         for key, _ in strategy_parameters.get(strategy, {}).items():
             params[key] = POST.get("parameters." + key)
         return params
+
+
+class BacktestingForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        attrs = {"type": "date", "class": "form-control"}
+        self.fields["start"] = forms.DateField(
+            widget=forms.DateInput(attrs=attrs), required=True
+        )
+        self.fields["end"] = forms.DateField(
+            widget=forms.DateInput(attrs=attrs), required=True
+        )
+
+        self.initial["start"] = datetime.datetime(2010, 1, 1)
+        self.initial["end"] = datetime.datetime.now()
